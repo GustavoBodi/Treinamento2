@@ -31,7 +31,7 @@ O programa têm 10 opções diferentes e deve ser rodado de forma iterativa:
 | 3 | Mostrar Usuários || Usuários |
 | 4 | Adiciona Pdf | Caminho para o Pdf e Ids dos Usuários | Erro ou Sucesso |
 | 5 | Remove Pdf | Id(checar função 6) | Pdfs |
-| 6 | Mostrat Pdf || Pdfs
+| 6 | Mostrar Pdf || Pdfs
 | 7 | Checar Reator | Id(pdf) | Erro ou Sucesso(não checa assinaturas) |
 | 8 | Assinar Pdf | Id(pdf) e Id(usuário) | Erro ou Sucesso |
 | 9 | Checa Assinatura(uma) | Id(pdf) e Id(usuário) | Erro ou Sucesso |
@@ -40,9 +40,4 @@ O programa têm 10 opções diferentes e deve ser rodado de forma iterativa:
 
 ## Exemplo
 Um exemplo do funcionamento pode ser visto abaixo:
-
-
-
-
-
 
