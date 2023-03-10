@@ -1,0 +1,25 @@
+version: '3.5'
+
+services:
+  db:
+    container_name: Database Postgresql
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: labsec 
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: senha
+    ports:
+      - "5432:5432"
+    networks:
+      - labsec
+    volumes:
+  app:
+    container_name: Treinamento 2
+    image: labsec
+    ports:
+      - "5432:5432"
+
+networks:
+  postgres:
+    driver: labsec 
