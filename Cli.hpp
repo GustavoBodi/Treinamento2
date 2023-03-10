@@ -11,7 +11,7 @@
 // A Classe de interface do usuario
 class Cli {
 public:
-    Cli(const StorageEngine &db) : db(db) { show_options(); };
+    Cli(StorageEngine *db) : db(db) { show_options(); };
 
     void show_options();
 
@@ -35,10 +35,11 @@ public:
 
     void check_signature();
 
+    ~Cli() {delete db;};
+
 
 private:
-    // Agrega a Classe que rege a database, portanto nao e diretamente um ponteiro do sqlite
-    StorageEngine db;
+    StorageEngine *db;
     void check(int user_id, int pdf_id);
     vector<int> get_ids();
 };

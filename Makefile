@@ -15,7 +15,7 @@ LIBP11_PREFIX ?= /opt/libp11/
 LIBP11_INCLUDEDIR ?= $(LIBP11_PREFIX)/include/
 
 ############ DEPENDENCIES ############################
-LIBS = $(LIBCRYPTOSEC) -L$(OPENSSL_LIBDIR) -Wl,-rpath,$(OPENSSL_LIBDIR) -lcrypto -pthread -lsqlite3
+LIBS = $(LIBCRYPTOSEC) -L$(OPENSSL_LIBDIR) -Wl,-rpath,$(OPENSSL_LIBDIR) -lcrypto -pthread -lpqxx -lpq
 INCLUDES = -I$(OPENSSL_INCLUDEDIR) -I$(LIBCRYPTOSEC_INCLUDEDIR) -I$(LIBP11_INCLUDEDIR)
 
 ########### OBJECTS ##################################

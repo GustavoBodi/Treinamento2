@@ -6,7 +6,6 @@
 
 #include <string>
 #include <libcryptosec/RSAKeyPair.h>
-#include <optional>
 
 // Classe para vincular o Usuario com as chaves, um pequeno wrapper
 class UserKeys {

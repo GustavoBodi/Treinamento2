@@ -7,14 +7,13 @@
 #include <vector>
 #include "User.hpp"
 #include "Pdf.hpp"
-#include "sqlite3.h"
+#include <pqxx/pqxx>
 
-// Classe que oferece as opearacoes em relacao a Database
 class StorageEngine {
 public:
     StorageEngine(std::string &path);
 
-    vector<int> get_users(int pdf_id);
+    std::vector<int> get_users(int pdf_id);
 
     ByteArray get_hash(int pdf_id);
 
@@ -32,9 +31,9 @@ public:
 
     int get_pdf(Pdf pdf_hash);
 
-    long long get_last_id();
-
     bool check_user(int id);
+
+    int get_last_id();
 
     bool exist_pdf(int id);
 
@@ -50,8 +49,9 @@ public:
 
     ByteArray get_signature(int pdf_id, int user_id);
 
-    virtual ~StorageEngine() {sqlite3_close_v2(db);};
+    virtual ~StorageEngine() {delete db;};
 
 private:
-    sqlite3 *db;
+    void prepare_statements();
+    pqxx::connection *db;
 };

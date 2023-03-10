@@ -4,19 +4,16 @@
 # docker build -t labsec-challenge .
 
 # First, we need to download the Ubuntu docker image.
-FROM ubuntu:18.04
-
+FROM centos:7
 # Here, we are doing some updates, to be safe! Better safe than sorry.
-RUN apt update; apt -y upgrade; apt -y autoclean; apt -y autoremove 
+RUN yum -y update
 
 # Let's get it started ...
 # We need git to clone our OpenSSL wrapper, the LibcryptoSEC.
 # Also, we need wget to dowload a specific version of OpenSSL.
 # Finally, gcc, g++, and make to get it done :)
-RUN apt -y install git wget gcc g++ make vim
-
-# Install sqlite and OpenSSH-server
-RUN apt -y install libsqlite3-dev openssh-server
+RUN yum -y install git wget gcc g++ make vim libpqxx postgresql-devel
+RUN yum -y install gcc gcc-c++ make clang make
 
 # Let's create a safe /home/ to go. It is not a proper user, it is just a folder.
 RUN mkdir /home/labsec/
@@ -42,9 +39,6 @@ RUN cd /home/labsec/ \
     && make \
     && make install
 
-# Add User
-RUN echo 'root:root' | chpasswd
-
 # And now, LibcryptoSEC.
 RUN cd /home/labsec/ \
     && git clone https://github.com/LabSEC/libcryptosec.git \
@@ -55,28 +49,11 @@ RUN cd /home/labsec/ \
     && export LIBP11_LIBDIR=$LIBP11_PREFIX/lib \
     && make \
     && make install
+	
+RUN export PKG_CONFIG_PATH=/usr/pgsql-10/lib/pkgconfig
 
-# Expose port for SSH
-EXPOSE 22
+RUN yum -y install epel-release openssh openssh-server
+RUN yum -y install libpqxx-devel
+RUN echo 'root:root' | chpasswd
 
-# Running the SSH Service
-
-# Setup a nice welcoming message :)
-RUN echo '\ncat /opt/README' >> ~/.bashrc
-
-#Allow root ssh
-RUN sed -Ei 's/#(PermitRootLogin).+/\1 yes/' /etc/ssh/sshd_config
-
-# Creating the challenge directory.
-# Good Luck!
-# docker run -ti --name labsec-challenge labsec-challenge bash
 RUN mkdir /home/labsec/challenge
-RUN touch /home/labsec/challenge/db.db
-COPY teste.pdf /home/labsec/challenge/
-COPY challenge.cpp /home/labsec/challenge/
-COPY *.hpp /home/labsec/challenge/
-COPY *.cpp /home/labsec/challenge/
-
-COPY Makefile /home/labsec/challenge/
-# COPY README /opt/
-RUN service ssh start

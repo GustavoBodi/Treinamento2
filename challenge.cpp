@@ -1,4 +1,5 @@
 #include <string>
+#include <pqxx/pqxx>
 
 #include "Cli.hpp"
 #include "StorageEngine.hpp"
@@ -7,7 +8,7 @@
 // mas antes de rodar precisa-se criar o arquivo apesar de ser uma instancia de sqlite (touch db.db)
 int main(int argc, char **argv) {
     std::string path = "db.db";
-    StorageEngine db = StorageEngine(path);
+    StorageEngine *db = new StorageEngine(path);
     Cli app_it = Cli(db);
 
     return 0;

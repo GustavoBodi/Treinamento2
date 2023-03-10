@@ -15,23 +15,23 @@ void Cli::create_user() {
     std::string name;
     std::cin >> name;
     User new_user = User(name);
-    if (db.insert_user(new_user)) {
+    if (db->insert_user(new_user)) {
         std::cout << "Succesfull User creation" << std::endl;
-        new_user.set_id((int) db.get_last_id());
+        new_user.set_id((int) db->get_last_id());
     } else {
         std::cout << "Failed to create user" << std::endl;
     }
 }
 
 void Cli::show_users() {
-    db.show_users();
+    db->show_users();
 }
 
 void Cli::delete_user() {
     std::cout << "Input the id of the User to be deleted" << std::endl;
     int id;
     std::cin >> id;
-    db.delete_user(id);
+    db->delete_user(id);
 }
 
 void Cli::show_options() {
@@ -87,13 +87,13 @@ void Cli::open_pdf() {
     std::cin >> path;
 
     Pdf pdf = Pdf(path);
-    int i = db.get_pdf(pdf);
+    int i = db->get_pdf(pdf);
     if (i != -1) {
         std::cout << "Your pdf_id is: " << i << std::endl;
     } else {
         vector<int> ids = get_ids();
         pdf.set_needed(ids);
-        db.insert_pdf(pdf);
+        db->insert_pdf(pdf);
     }
 
 }
@@ -104,7 +104,7 @@ vector<int> Cli::get_ids() {
     cout << "Insert the id of the User, for stopping(0): " << endl;
     cin >> id_needed;
     while (id_needed != 0) {
-        if (db.check_user(id_needed)) {
+        if (db->check_user(id_needed)) {
             ids.push_back(id_needed);
         } else {
             cout << "No user with such id" << endl;
@@ -121,7 +121,7 @@ void Cli::check_is_ready_reactor() {
     std::cout << "Insert the id of the Pdf" << std::endl;
     int id;
     std::cin >> id;
-    if (db.check_pdf(id)) {
+    if (db->check_pdf(id)) {
         std::cout << "The reactor is ready for this document" << std::endl;
     } else {
         std::cout << "The reactor is not ready for this document" << std::endl;
@@ -133,7 +133,7 @@ void Cli::check_signatures() {
     std::cout << "Put the pdf id" << std::endl;
     int pdf_id;
     std::cin >> pdf_id;
-    vector<int> list = db.get_users(pdf_id);
+    vector<int> list = db->get_users(pdf_id);
     for (int i = 0; i < list.size(); ++i) {
         check(list[i], pdf_id);
     }
@@ -149,22 +149,22 @@ void Cli::sign_pdf() {
     int user_id;
     std::cin >> user_id;
 
-    if (db.exist_pdf(pdf_id) && db.check_user(user_id) && db.check_sign_ready(pdf_id, user_id) ) {
-        db.insert_signed(pdf_id, user_id);
+    if (db->exist_pdf(pdf_id) && db->check_user(user_id) && db->check_sign_ready(pdf_id, user_id) ) {
+        db->insert_signed(pdf_id, user_id);
     } else {
         std::cout << "Failed to sign the pdf" << std::endl;
     }
 }
 
 void Cli::show_pdf() {
-    db.show_pdfs();
+    db->show_pdfs();
 }
 
 void Cli::delete_pdf() {
     std::cout << "Insert the id of the Pdf to delete: " << std::endl;
     int id;
     std::cin >> id;
-    db.delete_pdf(id);
+    db->delete_pdf(id);
 }
 
 void Cli::check_signature() {
@@ -174,7 +174,7 @@ void Cli::check_signature() {
     std::cout << "Insert the id of the User to check: " << std::endl;
     int user_id;
     std::cin >> user_id;
-    if (db.check_user(user_id) && db.check_pdf(pdf_id)) {
+    if (db->check_user(user_id) && db->check_pdf(pdf_id)) {
         check(user_id, pdf_id);
     } else {
         std::cout << "Error while checking" << std::endl;
@@ -182,10 +182,10 @@ void Cli::check_signature() {
 }
 
 void Cli::check(int user_id, int pdf_id) {
-    ByteArray hash = db.get_hash(pdf_id);
-    std::string key_buffer = db.get_public_key(user_id);
+    ByteArray hash = db->get_hash(pdf_id);
+    std::string key_buffer = db->get_public_key(user_id);
     RSAPublicKey public_key = RSAPublicKey(key_buffer);
-    ByteArray signature = db.get_signature(pdf_id, user_id);
+    ByteArray signature = db->get_signature(pdf_id, user_id);
 
     bool result = Signer::verify(public_key, signature, hash, MessageDigest::SHA256);
 
